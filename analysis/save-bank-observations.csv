@@ -1,0 +1,9 @@
+revision,bank,file_start,file_end,non_ff_bytes,first_non_ff,last_non_ff,zero_bytes,ff_bytes,unique_byte_values,different_bytes_vs_other_snapshot
+Rev 0,0,0x0000,0x2000,1141,0x0000,0x0497,437,7051,149,950
+Rev A,0,0x0000,0x2000,1132,0x0000,0x0497,381,7060,153,950
+Rev 0,1,0x2000,0x4000,5199,0x0000,0x1594,4496,2993,172,43
+Rev A,1,0x2000,0x4000,5200,0x0000,0x1594,4493,2992,172,43
+Rev 0,2,0x4000,0x6000,0,,,0,8192,1,0
+Rev A,2,0x4000,0x6000,0,,,0,8192,1,0
+Rev 0,3,0x6000,0x8000,0,,,0,8192,1,0
+Rev A,3,0x6000,0x8000,0,,,0,8192,1,0

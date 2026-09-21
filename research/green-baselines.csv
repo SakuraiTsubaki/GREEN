@@ -1,0 +1,5 @@
+id,kind,region,language,revision,size,md5,sha1,sha256,notes
+green-jp-rev0-rom,rom,JP,Japanese,Rev 0,524288,e30ffbab1f239f09b226477d84db1368,82c0eef40a5e2423699d9fd8ba15dfaa8b51d196,6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c,"POKEMON GREEN; SGB; MBC1+RAM+BATTERY; header revision 0"
+green-jp-reva-rom,rom,JP,Japanese,Rev A,524288,16ddd8897092936fbc0e286c6a6b23a2,4b97cd44aa3f0dd290bfe7b3ac17b7bd8270897b,3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816,"POKEMON GREEN; SGB; MBC1+RAM+BATTERY; header revision 1"
+green-jp-rev0-save-snapshot,save,JP,Japanese,Rev 0 snapshot,32768,cbcf7abdd65837ff6241286b34b3b777,f75047a0db2343a6a70b7e59f6be03eacc765c08,34cf10beeb0a9a2659178ce1a809f25ccabcdee32468171147068da916ad556b,"Independent save snapshot produced from Rev 0 ROM"
+green-jp-reva-save-snapshot,save,JP,Japanese,Rev A snapshot,32768,82e134043234e5af51311c8e27350d1d,2ee0552f3bd7e1e3b2be20ee13b105279764d620,b59e8c4eb1e0ac8b0bfeb859c322d5c2402c259be616a0a2a7f2ffcae1cc2fb2,"Independent save snapshot produced from Rev A ROM"

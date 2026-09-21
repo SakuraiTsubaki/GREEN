@@ -1,12 +1,29 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "profile": "generation-10-ready",
   "principles": {
     "data_driven": true,
     "future_generation_ids_are_not_hardcoded": true,
     "species_and_form_are_separate": true,
     "persistent_and_battle_forms_are_separate": true,
-    "save_format_is_versioned": true
+    "save_format_is_versioned": true,
+    "legacy_green_is_import_format": true,
+    "blank_snapshot_bytes_are_not_capacity": true
+  },
+  "legacy_green_input": {
+    "rom_size_bytes": 524288,
+    "rom_bank_size_bytes": 16384,
+    "rom_bank_count": 32,
+    "cartridge_type": "0x03",
+    "rom_size_code": "0x04",
+    "ram_size_code": "0x03",
+    "save_size_bytes": 32768,
+    "ram_bank_size_bytes": 8192,
+    "ram_bank_count": 4,
+    "verified_revisions": [
+      0,
+      1
+    ]
   },
   "id_width_bits": {
     "species": 16,
@@ -26,14 +43,18 @@
     "invalid_u16": 65535
   },
   "save": {
+    "legacy_import_size_bytes": 32768,
     "format_version_bits": 16,
     "schema_version_bits": 16,
     "feature_flags_bits": 64,
-    "migration_required": true
+    "migration_required": true,
+    "legacy_layout_extended_in_place": false
   },
   "notes": [
-    "The limits describe storage widths, not claimed Generation 10 content counts.",
+    "Storage widths are architectural ceilings, not claimed Generation 10 content counts.",
     "Original Generation I byte IDs are compatibility inputs, not the expanded runtime ceiling.",
+    "The supplied legacy ROMs are 512 KiB MBC1 images with 32 KiB battery SRAM.",
+    "The supplied save snapshots have all-FF banks 2 and 3, but this is not proof of universally free expansion space.",
     "Reserved sentinel values must never be assigned to real content."
   ]
 }

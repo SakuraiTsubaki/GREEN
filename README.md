@@ -2,23 +2,32 @@
 
 Generation I Green remake project with a modern, data-driven engine profile.
 
-## First rule: expand before porting content
+## Evidence first, expansion second
 
-GREEN must not inherit Generation I's 8-bit content ceilings as project-wide
-limits. Before importing maps, scripts, Pokémon data, battle logic, text, or
-assets, the project defines an expansion layer that can accept future content
-without another structural rewrite.
+GREEN is expanded before later-generation content is ported, but expansion
+decisions must be anchored to the actual Green ROM and save formats.
 
-The current target is **Generation-10-ready architecture**, not hard-coded
-Generation 10 content. Unknown future IDs remain data, not engine constants.
+The verified Japanese source inputs currently cover:
+
+- Pocket Monsters Green Rev 0 ROM;
+- Pocket Monsters Green Rev A ROM;
+- one independent 32 KiB save snapshot from each revision.
+
+The binaries are not committed. Their hashes and reproducible observations are
+stored in `research/` and `analysis/`.
+
+The original Green ROM/save format is a **legacy import/compatibility layer**.
+It is not enlarged in place to become the Generation-10-ready runtime format.
 
 See:
 
+- `docs/ROM_SAVE_EVIDENCE.md`
 - `docs/EXPANSION_ARCHITECTURE.md`
 - `docs/SAVE_SCHEMA.md`
 - `config/capacity.json`
-- `manifests/generation-limits.csv`
-- `manifests/expansion-domains.csv`
+- `research/green-baselines.csv`
+- `analysis/rom-bank-diff.csv`
+- `analysis/save-bank-observations.csv`
+- `tools/inspect_green_inputs.py`
 
-The original Pocket Monsters Green data will be preserved as a compatibility
-baseline while the remake runtime uses the expanded model.
+Unknown Generation 10 content remains data, not hard-coded assumptions.
