@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "profile": "generation-10-ready",
+  "principles": {
+    "data_driven": true,
+    "future_generation_ids_are_not_hardcoded": true,
+    "species_and_form_are_separate": true,
+    "persistent_and_battle_forms_are_separate": true,
+    "save_format_is_versioned": true
+  },
+  "id_width_bits": {
+    "species": 16,
+    "form": 16,
+    "move": 16,
+    "item": 16,
+    "ability": 16,
+    "type": 8,
+    "location": 16,
+    "map": 16,
+    "trainer_class": 16,
+    "evolution_method": 16
+  },
+  "sentinels": {
+    "none": 0,
+    "invalid_u8": 255,
+    "invalid_u16": 65535
+  },
+  "save": {
+    "format_version_bits": 16,
+    "schema_version_bits": 16,
+    "feature_flags_bits": 64,
+    "migration_required": true
+  },
+  "notes": [
+    "The limits describe storage widths, not claimed Generation 10 content counts.",
+    "Original Generation I byte IDs are compatibility inputs, not the expanded runtime ceiling.",
+    "Reserved sentinel values must never be assigned to real content."
+  ]
+}

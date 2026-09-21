@@ -1,0 +1,11 @@
+domain,id_width_bits,identity_model,persistent,battle_temporary,notes
+species,16,base_species,yes,no,forms are separate
+form,16,separate_form_id,yes,yes,battle-only form state may use battle_form_id
+move,16,global_move_id,yes,no,no 8-bit global ceiling
+item,16,global_item_id,yes,no,no 8-bit global ceiling
+ability,16,global_ability_id,yes,no,modern mechanic layer
+type,8,global_type_id,yes,no,255 reserved
+location,16,logical_location_id,yes,no,independent of physical table order
+map,16,logical_map_id,yes,no,independent of bank placement
+trainer_class,16,global_trainer_class_id,yes,no,data-driven
+evolution_method,16,condition_namespace,yes,no,extensible conditions

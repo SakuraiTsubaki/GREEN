@@ -1,0 +1,27 @@
+game_scope,context,max_species_id,max_move_id,max_item_id,status,notes
+RB/Y,Gen1,151,165,255,known,legacy reference
+GS/C,Gen2,251,251,255,known,legacy reference
+RS,Gen3,386,354,346,known,reference
+Emerald,Gen3,386,354,376,known,reference
+FRLG,Gen3,386,354,374,known,reference
+DP,Gen4,493,467,464,known,reference
+Platinum,Gen4,493,467,467,known,reference
+HGSS,Gen4,493,467,536,known,reference
+BW,Gen5,649,559,632,known,reference
+B2W2,Gen5,649,559,638,known,reference
+XY,Gen6,721,617,717,known,reference
+ORAS,Gen6,721,621,775,known,reference
+SM,Gen7,802,719,920,known,reference
+USUM,Gen7,807,728,959,known,reference
+LGPE,Gen7b,809,742,1057,known,reference
+SWSH base,Gen8,890,796,1278,known,reference
+SWSH Isle of Armor,Gen8,893,818,1589,known,reference
+SWSH Crown Tundra,Gen8,898,826,1607,known,reference
+PLA,Gen8a,905,850,1828,known,reference
+BDSP,Gen8b,493,826,1822,known,reference
+SV base+early update,Gen9,1010,900,2400,known,reference
+SV Teal Mask,Gen9,1017,904,2481,known,reference
+SV Indigo Disk,Gen9,1025,919,2557,known,reference
+Z-A base,Gen9a,870,920,2634,known,reference table ceiling
+Z-A Mega Dimension,Gen9a,1000,920,2684,known,reference table ceiling
+Generation 10,Gen10,,,,planned,content counts intentionally unknown; architecture must not depend on them
