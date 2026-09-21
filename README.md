@@ -1,33 +1,28 @@
 # GREEN
 
-Generation I Green remake project with a modern, data-driven engine profile.
+**ポケットモンスター 緑** (Generation I)를 **Game Boy Advance / Generation III 계열 기반의 현대화 리메이크**로 재구축하는 저장소입니다.
 
-## Evidence first, expansion second
+## 현재 정본 방향
 
-GREEN is expanded before later-generation content is ported, but expansion
-decisions must be anchored to the actual Green ROM and save formats.
+- 일본판 원작과 모든 확인된 revision을 원전으로 전수조사합니다.
+- 원작의 지역, 스토리, 이벤트, NPC, 버전 고유 요소는 보존합니다.
+- 포켓몬/타입/특성/기술/진화/폼/아이템/전투·육성 규칙은 현재 검증 가능한 최신 공식 기준으로 현대화합니다.
+- 최종 실행 대상은 **GBA**입니다.
+- GB/GBC mapper, SRAM, 원본 주소 구조는 원본 분석 자료로 보존하지만 최종 런타임 엔진으로 사용하지 않습니다.
+- 미출시·미검증 세대 콘텐츠는 추측하지 않습니다.
 
-The verified Japanese source inputs currently cover:
+## 기반
 
-- Pocket Monsters Green Rev 0 ROM;
-- Pocket Monsters Green Rev A ROM;
-- one independent 32 KiB save snapshot from each revision.
+- 원본 조사: `SakuraiTsubaki/PocketMonsters-Midori-Disassembly`
+- 공통 현대화 연구: `SakuraiTsubaki/EMERALD`
+- 현대 코어 기준: `rh-hideout/pokeemerald-expansion@75b806a3ab57a81ff1eb6179288981f0b3cc3050`
 
-The binaries are not committed. Their hashes and reproducible observations are
-stored in `research/` and `analysis/`.
+## 문서
 
-The original Green ROM/save format is a **legacy import/compatibility layer**.
-It is not enlarged in place to become the Generation-10-ready runtime format.
+- `PROJECT.md` — 현재 프로젝트 방향의 정본
+- `config/remake.json` — 기계 판독 가능한 작품/엔진/원본 기준
+- `docs/REMAKE_POLICY.md` — 원작 보존과 최신화 정책
 
-See:
+저장소에 남아 있는 이전 확장 설계 문서와 도구는 삭제하지 않습니다. 원본 구조·세이브·ID·용량 연구 자료로 보존하며, GBA 리메이크에 필요한 내용만 새 런타임 설계로 옮깁니다.
 
-- `docs/ROM_SAVE_EVIDENCE.md`
-- `docs/EXPANSION_ARCHITECTURE.md`
-- `docs/SAVE_SCHEMA.md`
-- `config/capacity.json`
-- `research/green-baselines.csv`
-- `analysis/rom-bank-diff.csv`
-- `analysis/save-bank-observations.csv`
-- `tools/inspect_green_inputs.py`
-
-Unknown Generation 10 content remains data, not hard-coded assumptions.
+ROM 바이너리는 GitHub에 커밋하지 않습니다.
