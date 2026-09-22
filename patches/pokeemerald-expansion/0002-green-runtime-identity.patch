@@ -9,7 +9,7 @@ selects its supported Kanto/FRLG runtime and map assets.
 
 --- a/Makefile
 +++ b/Makefile
-@@ -14,8 +14,8 @@
+@@ -14,7 +14,7 @@
  ifeq (leafgreen, $(or $(BUILD), $(MAKECMDGOALS)))
  	GAME_VERSION 	:= LEAFGREEN
 -	TITLE       	:= POKEMON LEAF
@@ -19,7 +19,7 @@ selects its supported Kanto/FRLG runtime and map assets.
  	BUILD_NAME  	:= leafgreen
  	MAP_VERSION 	:= firered
  endif
-@@ -23,7 +23,7 @@
+@@ -22,6 +22,6 @@
  
  # GBA rom header
 -MAKER_CODE  := 01
