@@ -8,41 +8,32 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class GreenExpansionTests(unittest.TestCase):
-    def test_capacity_contract(self):
-        data = json.loads((ROOT / "config/capacity.json").read_text(encoding="utf-8"))
-        self.assertEqual(data["target"], "GREEN")
-        self.assertGreaterEqual(data["policy_target_generation"], 10)
-        for name in ("species", "forms", "moves", "abilities", "items", "types"):
-            self.assertGreaterEqual(data["canonical_ids"][name]["bits"], 16)
-        for name in ("maps", "scripts", "text", "graphics", "audio"):
-            self.assertGreaterEqual(data["resource_keys"][name]["bits"], 32)
-
-    def test_engine_pin_and_profile(self):
-        data = json.loads((ROOT / "config/capacity.json").read_text(encoding="utf-8"))
-        self.assertEqual(data["engine"]["build_profile"], "leafgreen")
-        self.assertEqual(
-            data["engine"]["verified_ref"],
-            "75b806a3ab57a81ff1eb6179288981f0b3cc3050",
+    def setUp(self):
+        self.data = json.loads(
+            (ROOT / "config/capacity.json").read_text(encoding="utf-8")
         )
 
-    def test_engine_patch_bundle(self):
-        patch_dir = ROOT / "patches/pokeemerald-expansion"
-        names = sorted(p.name for p in patch_dir.glob("*.patch"))
-        self.assertEqual(names, [
-            "0001-green-expand-persistent-species-item-ids.patch",
-            "0002-green-runtime-identity.patch",
-        ])
-        first = (patch_dir / names[0]).read_text(encoding="utf-8")
-        self.assertIn("u16 species", first)
-        self.assertIn("u16 heldItem", first)
-        self.assertIn("MOVES_COUNT_ALL <= (1 << 11)", first)
+    def test_original_rom_runtime(self):
+        self.assertEqual(self.data["runtime"], "original-game-boy-rom")
+        self.assertIn("no-gba-engine-dependency", self.data["invariants"])
 
-    def test_source_save_boundary(self):
-        data = json.loads((ROOT / "config/capacity.json").read_text(encoding="utf-8"))
-        source = data["source_evidence"]["japanese"]
-        self.assertEqual(source["main_data_start"], 0x2598)
-        self.assertEqual(source["checksum_offset"], 0x3594)
-        self.assertTrue(source["checksum_verified_on_supplied_saves"])
+    def test_mapper_capacity(self):
+        self.assertEqual(self.data["source"]["mapper"], "MBC1+RAM+BATTERY")
+        self.assertEqual(self.data["expanded"]["mapper"], "MBC5+RAM+BATTERY")
+        self.assertEqual(self.data["expanded"]["rom_bytes"], 8 * 1024 * 1024)
+        self.assertEqual(self.data["expanded"]["rom_banks"], 512)
+        self.assertEqual(self.data["expanded"]["sram_bytes"], 128 * 1024)
+        self.assertEqual(self.data["expanded"]["sram_banks"], 16)
+
+    def test_generation10_id_widths(self):
+        for name, width in self.data["id_width_bits"].items():
+            self.assertGreaterEqual(width, 16, name)
+
+    def test_full_mbc5_bank_reference(self):
+        far = self.data["far_reference"]
+        self.assertGreaterEqual(far["bank_bits"], 9)
+        self.assertEqual(far["address_bits"], 16)
+        self.assertGreaterEqual(far["storage_bytes"], 4)
 
 
 if __name__ == "__main__":

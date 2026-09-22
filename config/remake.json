@@ -1,73 +1,54 @@
 {
-  "schema": 2,
+  "schema": 3,
   "project": "GREEN",
   "title": "ポケットモンスター 緑",
   "originalGeneration": 1,
-  "targetPlatform": "Game Boy Advance",
-  "targetEngine": "Generation III-derived modern remake core",
-  "originalRepository": "SakuraiTsubaki/PocketMonsters-Midori-Disassembly",
+  "targetPlatform": "Game Boy / Super Game Boy",
+  "runtimeStrategy": "expand-original-rom",
   "originalInputs": [
     "Pocket Monsters - Midori (Japan) (SGB Enhanced).gb",
     "Pocket Monsters - Midori (Japan) (Rev A) (SGB Enhanced).gb"
   ],
-  "modernCore": {
-    "repository": "rh-hideout/pokeemerald-expansion",
-    "ref": "75b806a3ab57a81ff1eb6179288981f0b3cc3050",
-    "coordinationRepository": "SakuraiTsubaki/EMERALD"
+  "sourceCartridge": {
+    "mapper": "MBC1+RAM+BATTERY",
+    "romBytes": 524288,
+    "romBanks16KiB": 32,
+    "sramBytes": 32768,
+    "sramBanks8KiB": 4
   },
-  "priority": [
-    "Japanese originals",
-    "revision fidelity",
-    "latest verified official Pokemon systems",
-    "GBA compatibility"
-  ],
-  "legacyGbGbcEngineWork": "research-only-not-runtime",
+  "expandedCartridge": {
+    "mapper": "MBC5+RAM+BATTERY",
+    "cartridgeType": "0x1B",
+    "romBytes": 8388608,
+    "romBanks16KiB": 512,
+    "romSizeCode": "0x08",
+    "sramBytes": 131072,
+    "sramBanks8KiB": 16,
+    "ramSizeCode": "0x04",
+    "preserveSgbFlag": true
+  },
+  "legacyRomBanksPreserved": "0x000-0x01F",
+  "expansionRomBanks": "0x020-0x1FF",
+  "legacySaveBanksPreserved": "0x00-0x03",
+  "expansionSaveBanks": "0x04-0x0F",
+  "idWidthsBits": {
+    "species": 16,
+    "form": 16,
+    "move": 16,
+    "item": 16,
+    "ability": 16,
+    "type": 16,
+    "location": 16,
+    "map": 16,
+    "trainerClass": 16,
+    "evolutionMethod": 16
+  },
+  "farReference": {
+    "bankBits": 9,
+    "addressBits": 16,
+    "storageBytes": 4
+  },
   "romBinariesCommitted": false,
-  "japanSourceSurvey": {
-    "coordinationRepository": "SakuraiTsubaki/EMERALD",
-    "census": "manifests/japan-20-rom-census.csv",
-    "revisionSummary": "manifests/japan-revision-summary.json",
-    "survey": "research/japan-gen1-gen2-gen3-survey.md",
-    "scanner": "tools/scan_japan_rom_set.py",
-    "romCount": 20,
-    "generationCounts": {
-      "gen1": 9,
-      "gen2": 5,
-      "gen3": 6
-    }
-  },
-  "sharedResearch": {
-    "scriptSemantics": {
-      "repository": "SakuraiTsubaki/EMERALD",
-      "summary": "manifests/japan-script-semantic-summary.json",
-      "extraction": "manifests/japan-script-root-extraction.json",
-      "report": "research/japan-script-semantics-survey.md"
-    },
-    "battleLogic": {
-      "repository": "SakuraiTsubaki/EMERALD",
-      "matrix": "manifests/japan-battle-generation-matrix.csv",
-      "policy": "manifests/japan-battle-runtime-policy.json",
-      "report": "research/japan-battle-logic-survey.md"
-    },
-    "saveRtc": {
-      "repository": "SakuraiTsubaki/EMERALD",
-      "matrix": "manifests/japan-save-rtc-matrix.csv",
-      "policy": "manifests/remake-save-policy.json",
-      "report": "research/japan-save-rtc-survey.md"
-    }
-  },
-  "nativeSaveProfile": "JPN-GREEN-GBA",
-  "nativeSaveIsolation": true,
-  "generationSuperset": {
-    "repository": "SakuraiTsubaki/EMERALD",
-    "manifest": "manifests/generation-supersets.json",
-    "documentation": "docs/GENERATION_SUPERSET_MERGE.md",
-    "generationKey": "gen1",
-    "sourceProfile": "GREEN",
-    "mergePolicy": "union-preserve-variants",
-    "runtimeModes": [
-      "generation-superset",
-      "source-version-reproduction"
-    ]
-  }
+  "saveBinariesCommitted": false,
+  "futureContentPolicy": "official-verified-only"
 }

@@ -3,55 +3,40 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "config" / "capacity.json"
-
-REQUIRED_16 = {
-    "species", "forms", "moves", "abilities", "items", "types",
-    "evolution_methods", "encounter_tables", "trainer_classes",
-}
-REQUIRED_32 = {"maps", "scripts", "text", "graphics", "audio"}
+DATA = json.loads((ROOT / "config/capacity.json").read_text(encoding="utf-8"))
 
 
 def main() -> None:
-    data = json.loads(CONFIG.read_text(encoding="utf-8"))
+    assert DATA["target"] == "GREEN"
+    assert DATA["runtime"] == "original-game-boy-rom"
+    assert DATA["policy_target_generation"] >= 10
 
-    assert data["target"] == "GREEN"
-    assert data["policy_target_generation"] >= 10
-    assert data["generation_field_bits"] >= 8
+    source = DATA["source"]
+    assert source["mapper"] == "MBC1+RAM+BATTERY"
+    assert source["rom_bytes"] == 0x80000
+    assert source["sram_bytes"] == 0x8000
 
-    canonical = data["canonical_ids"]
-    assert REQUIRED_16 <= set(canonical)
-    for name in REQUIRED_16:
-        spec = canonical[name]
-        assert spec["bits"] >= 16, name
-        assert spec["invalid"] == (1 << spec["bits"]) - 1, name
-        assert spec["none"] != spec["invalid"], name
+    expanded = DATA["expanded"]
+    assert expanded["mapper"] == "MBC5+RAM+BATTERY"
+    assert expanded["rom_bytes"] == 0x800000
+    assert expanded["rom_banks"] == 512
+    assert expanded["rom_bank_bits"] == 9
+    assert expanded["sram_bytes"] == 0x20000
+    assert expanded["sram_banks"] == 16
 
-    resources = data["resource_keys"]
-    assert REQUIRED_32 <= set(resources)
-    for name in REQUIRED_32:
-        spec = resources[name]
-        assert spec["bits"] >= 32, name
-        assert spec["invalid"] == (1 << spec["bits"]) - 1, name
+    for width in DATA["id_width_bits"].values():
+        assert width >= 16
 
-    invariants = set(data["invariants"])
-    assert "generation-is-metadata-not-an-array-bound" in invariants
-    assert "species-and-forms-have-separate-canonical-identities" in invariants
-    assert "unknown-future-content-is-not-fabricated" in invariants
+    far = DATA["far_reference"]
+    assert far["bank_bits"] >= 9
+    assert far["address_bits"] == 16
+    assert far["storage_bytes"] >= 4
 
-    engine = data["engine"]
-    assert engine["upstream"] == "rh-hideout/pokeemerald-expansion"
-    assert engine["build_profile"] == "leafgreen"
-    assert len(engine["verified_ref"]) == 40
+    invariants = set(DATA["invariants"])
+    assert "original-rom-is-the-runtime-baseline" in invariants
+    assert "no-gba-engine-dependency" in invariants
 
-    source = data["source_evidence"]["japanese"]
-    assert source["observed_rom_bytes"] == 0x80000
-    assert source["declared_sram_bytes"] == 0x8000
-    assert source["main_data_start"] == 0x2598
-    assert source["checksum_offset"] == 0x3594
-    assert source["checksum_verified_on_supplied_saves"] is True
-
-    print("GREEN expansion policy: OK")
+    print("GREEN original-ROM expansion policy: OK")
 
 
 if __name__ == "__main__":

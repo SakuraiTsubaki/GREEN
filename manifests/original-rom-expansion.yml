@@ -1,0 +1,35 @@
+schema_version: 1
+project: GREEN
+runtime: original-game-boy-rom
+
+source:
+  mapper: MBC1+RAM+BATTERY
+  cartridge_type: 0x03
+  rom_bytes: 0x080000
+  rom_banks_16k: 32
+  sram_bytes: 0x8000
+  sram_banks_8k: 4
+  revisions:
+    rev0:
+      header_revision: 0
+      sha256: 6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c
+    reva:
+      header_revision: 1
+      sha256: 3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816
+
+expanded:
+  mapper: MBC5+RAM+BATTERY
+  cartridge_type: 0x1B
+  rom_size_code: 0x08
+  rom_bytes: 0x800000
+  rom_banks_16k: 512
+  ram_size_code: 0x04
+  sram_bytes: 0x20000
+  sram_banks_8k: 16
+  preserve_sgb_flag: true
+
+ranges:
+  legacy_rom_banks: 0x000-0x01F
+  expansion_rom_banks: 0x020-0x1FF
+  legacy_sram_banks: 0x00-0x03
+  expansion_sram_banks: 0x04-0x0F

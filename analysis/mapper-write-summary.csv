@@ -1,0 +1,9 @@
+revision,sha256,opcode,target,count,interpretation
+Rev 0,6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c,EA,0x2000,89,MBC1 ROM-bank low register / MBC5 ROM-bank low register
+Rev 0,6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c,EA,0x3000,0,MBC5 ninth ROM-bank bit exact-address scan
+Rev 0,6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c,EA,0x4000,19,MBC1 high/RAM bank register / MBC5 RAM bank register
+Rev 0,6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c,EA,0x6000,25,MBC1 mode register; ignored by MBC5
+Rev A,3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816,EA,0x2000,89,MBC1 ROM-bank low register / MBC5 ROM-bank low register
+Rev A,3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816,EA,0x3000,0,MBC5 ninth ROM-bank bit exact-address scan
+Rev A,3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816,EA,0x4000,19,MBC1 high/RAM bank register / MBC5 RAM bank register
+Rev A,3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816,EA,0x6000,25,MBC1 mode register; ignored by MBC5

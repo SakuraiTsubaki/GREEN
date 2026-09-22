@@ -1,57 +1,47 @@
-# GREEN Save Schema Contract
+# GREEN Expanded Save Schema
 
-GREEN uses a versioned remake save schema and a separate importer for original
-Pocket Monsters Green save images.
+## Source
 
-## Evidence boundary
+Japanese Green uses a 32 KiB battery-backed save image (four 8 KiB SRAM banks).
 
-The supplied Rev 0 and Rev A save snapshots are both exactly 32 KiB, matching
-four 8 KiB SRAM banks reported by the ROM cartridge header.
+The supplied Rev 0 and Rev A snapshots validate against the Japanese Gen I main
+checksum currently recorded by GREEN.
 
-In both supplied snapshots, banks 2 and 3 are entirely 0xFF. This is **not**
-treated as guaranteed free space. A pair of snapshots cannot prove that a bank
-is unused by every game state, subsystem, or revision.
+## Target
 
-The two snapshots differ by 993 bytes. Because they were saved independently,
-those bytes cannot be labelled revision-format differences without controlled
-experiments.
+The original-ROM expansion target uses MBC5 with 128 KiB SRAM (sixteen 8 KiB
+banks).
 
-See `docs/ROM_SAVE_EVIDENCE.md`.
+### Banks 0x00-0x03
 
-## Legacy importer
+Legacy Green area. A migration copies all 32 KiB byte-for-byte. Existing Green
+code continues to see its original data.
 
-Original Green saves are accepted as a 32 KiB source format. The importer must:
+### Banks 0x04-0x0F
 
-- retain the source ROM revision and source save hash as provenance;
-- parse legacy fields without widening them in place;
-- map legacy species/item/move IDs to canonical GREEN IDs;
-- validate known checksums once their exact ranges are verified;
-- preserve unknown bytes until their purpose is established.
+GREEN extension area.
 
-## Expanded save
+Bank 0x04 starts with this little-endian header:
 
-Every expanded GREEN save identifies:
+| Offset | Size | Field |
+| --- | ---: | --- |
+| 0x0000 | 8 | ASCII magic `GRN10EXT` |
+| 0x0008 | 2 | schema version |
+| 0x000A | 1 | source ROM revision |
+| 0x000B | 1 | flags |
+| 0x000C | 4 | extension payload length |
+| 0x0010 | 4 | payload CRC32 |
+| 0x0014 | 4 | reserved |
 
-- save format version;
-- data/schema version;
-- enabled feature flags;
-- integrity/checksum information;
-- migration source when converted from an older schema.
+Initial schema version is 1.
 
-The project reserves 16 bits for the format version, 16 bits for the schema
-version, and 64 bits for feature flags.
+The remainder of the expanded save is initialized to 0xFF until an expanded
+system owns a range.
 
-Persistent Pokémon records use the widths from `config/capacity.json`.
-Species and form are separate identities. Temporary battle-only forms are not
-serialized as permanent species identities unless a mechanic explicitly
-requires persistent state.
+## ID rule
 
-## Migration
+New persistent records use 16-bit IDs for species, form, move, item, ability,
+type, and other globally extensible content domains.
 
-Save compatibility is handled by explicit deterministic migrations:
-
-`vN -> vN+1`
-
-Original Pocket Monsters Green saves are import sources, not `v0` of the new
-layout. New mechanics use versioned extension blocks rather than undocumented
-padding or bytes that merely appear unused in sample saves.
+The existing first 32 KiB is not widened in place. Compatibility data is
+translated when an expanded subsystem reads or migrates a legacy record.

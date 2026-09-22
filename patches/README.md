@@ -1,22 +1,12 @@
-# GREEN engine patches
+# GREEN patches
 
-These patches target the pinned modern core:
+GREEN patches apply to the original Japanese Pocket Monsters Green Game Boy ROM
+family only.
 
-`rh-hideout/pokeemerald-expansion@75b806a3ab57a81ff1eb6179288981f0b3cc3050`
+No GBA or external engine patch set is used.
 
-They are kept outside the upstream checkout so GREEN can audit every engine
-change independently.
+Generated ROM patches/binaries are not committed until their source revision,
+changed offsets, bank semantics, and verification method are documented.
 
-Current order:
-
-1. `0001-green-expand-persistent-species-item-ids.patch`
-   - widens persistent species/form and held-item storage to 16 bits;
-   - keeps `PokemonSubstruct0` at 12 bytes;
-   - adds compile-time capacity guards, including the current 11-bit move gate.
-2. `0002-green-runtime-identity.patch`
-   - selects the LeafGreen/Kanto runtime;
-   - assigns Japanese GREEN development-build identity;
-   - does not claim an official Nintendo/Game Freak product code.
-
-Apply only to the pinned commit and validate with
-`tools/prepare_green_engine.py`.
+The current implementation work is in reproducible transformation tools under
+`tools/`.

@@ -1,28 +1,31 @@
 # GREEN
 
-**ポケットモンスター 緑** (Generation I)를 **Game Boy Advance / Generation III 계열 기반의 현대화 리메이크**로 재구축하는 저장소입니다.
+Japanese **ポケットモンスター 緑** expanded from its **original Game Boy ROM**.
 
-## 현재 정본 방향
+GREEN does not move the game to GBA. The executable baseline is the supplied
+Japanese Green Rev 0 / Rev A Game Boy ROM pair.
 
-- 일본판 원작과 모든 확인된 revision을 원전으로 전수조사합니다.
-- 원작의 지역, 스토리, 이벤트, NPC, 버전 고유 요소는 보존합니다.
-- 포켓몬/타입/특성/기술/진화/폼/아이템/전투·육성 규칙은 현재 검증 가능한 최신 공식 기준으로 현대화합니다.
-- 최종 실행 대상은 **GBA**입니다.
-- GB/GBC mapper, SRAM, 원본 주소 구조는 원본 분석 자료로 보존하지만 최종 런타임 엔진으로 사용하지 않습니다.
-- 미출시·미검증 세대 콘텐츠는 추측하지 않습니다.
+## Current expansion target
 
-## 기반
+- source: MBC1, 512 KiB ROM, 32 KiB SRAM
+- target: **MBC5, 8 MiB ROM, 128 KiB SRAM**
+- source ROM banks 0x00-0x1F preserved
+- source SRAM banks 0x00-0x03 preserved
+- new ROM banks 0x20-0x1FF reserved for expanded code/data
+- new SRAM banks 0x04-0x0F reserved for versioned expansion data
+- global content IDs are widened to 16-bit
 
-- 원본 조사: `SakuraiTsubaki/PocketMonsters-Midori-Disassembly`
-- 공통 현대화 연구: `SakuraiTsubaki/EMERALD`
-- 현대 코어 기준: `rh-hideout/pokeemerald-expansion@75b806a3ab57a81ff1eb6179288981f0b3cc3050`
+The target is capacity for Generation 10 without inventing unreleased content.
 
-## 문서
+## Evidence and tools
 
-- `PROJECT.md` — 현재 프로젝트 방향의 정본
-- `config/remake.json` — 기계 판독 가능한 작품/엔진/원본 기준
-- `docs/REMAKE_POLICY.md` — 원작 보존과 최신화 정책
+- `research/green-baselines.csv` — verified input hashes
+- `analysis/rom-bank-diff.csv` — Rev 0 / Rev A bank differences
+- `analysis/save-bank-observations.csv` — supplied save observations
+- `analysis/mapper-write-summary.csv` — direct mapper-write opcode scan
+- `tools/inspect_green_inputs.py` — baseline inspection
+- `tools/scan_mapper_writes.py` — mapper write census
+- `tools/expand_green_rom.py` — 512 KiB MBC1 -> 8 MiB MBC5 image scaffold
+- `tools/expand_green_save.py` — 32 KiB -> 128 KiB save migration scaffold
 
-저장소에 남아 있는 이전 확장 설계 문서와 도구는 삭제하지 않습니다. 원본 구조·세이브·ID·용량 연구 자료로 보존하며, GBA 리메이크에 필요한 내용만 새 런타임 설계로 옮깁니다.
-
-ROM 바이너리는 GitHub에 커밋하지 않습니다.
+ROM/SAV binaries are never committed.

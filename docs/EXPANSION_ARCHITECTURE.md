@@ -1,102 +1,88 @@
-# GREEN Expansion Architecture
+# GREEN Original ROM Expansion Architecture
 
-## Goal
+## 1. Verified source
 
-GREEN is expanded **before** Generation I content is ported. The purpose is to
-avoid rebuilding the engine whenever later-generation data is introduced.
+Both supplied Japanese Green ROMs are 512 KiB and identify cartridge type
+0x03 (MBC1 + RAM + battery), ROM size code 0x04, and RAM size code 0x03.
+Their header revision bytes are 0 and 1.
 
-The design target is Generation-10-ready capacity. This does **not** guess or
-assign unreleased Generation 10 species, moves, items, abilities, forms, or
-mechanics. Future content is loaded through tables and manifests.
+The supplied saves are 32 KiB.
 
-## 1. ID model
+## 2. Cartridge expansion target
 
-The original game uses compact IDs suited to its 1996 content set. Those IDs
-remain part of the compatibility layer only.
+GREEN expands the original cartridge image to:
 
-Expanded runtime IDs:
+- cartridge type 0x1B: MBC5 + RAM + battery;
+- ROM size code 0x08: 8 MiB;
+- RAM size code 0x04: 128 KiB;
+- 512 ROM banks of 16 KiB;
+- 16 SRAM banks of 8 KiB.
 
-| Domain | Storage | Rule |
-| --- | ---: | --- |
-| Species | u16 | Base species identity only |
-| Form | u16 | Separate from species |
-| Move | u16 | No 8-bit global ceiling |
-| Item | u16 | No 8-bit global ceiling |
-| Ability | u16 | Added by the remake layer |
-| Type | u8 | 0-254 usable; 255 reserved |
-| Location | u16 | Stable logical location ID |
-| Map | u16 | Stable logical map ID |
-| Trainer class | u16 | Data-driven |
-| Evolution method | u16 | Extensible condition namespace |
+MBC5 exposes an 8-bit low ROM-bank register at 0x2000-0x2FFF and a ninth ROM
+bank bit at 0x3000-0x3FFF. SRAM bank selection remains in 0x4000-0x5FFF.
 
-`0xFFFF` is reserved as an invalid u16 ID and must not become real content.
+## 3. Preservation boundary
 
-## 2. Species and forms
+ROM banks 0x000-0x01F are the original 512 KiB region.
 
-Do not encode every form as an unrelated species slot.
+The ROM expansion tool copies this region unchanged except the cartridge header
+fields required for mapper/size migration and the two checksums that cover the
+header/image.
 
-A Pokémon identity is modeled as:
+Banks 0x020-0x1FF are new expansion space.
 
-- `species_id`: persistent base species identity;
-- `form_id`: persistent or selected form identity;
-- `battle_form_id`: temporary battle-only state when applicable;
-- optional form parameters for mechanics that require additional state.
+SRAM banks 0x00-0x03 are copied byte-for-byte from the original 32 KiB save.
+Banks 0x04-0x0F are expansion space.
 
-This allows regional forms, cosmetic forms, battle-only forms, item-driven
-forms, weather forms, stance forms, and future mechanics without exhausting the
-species namespace or changing save structure again.
+## 4. Mapper migration evidence
 
-## 3. Original Green compatibility
+A direct opcode scan of both supplied ROM revisions found identical exact
+absolute-store patterns:
 
-Original Green IDs are imported through explicit mapping tables:
+- `LD (0x2000),A`: 89 occurrences;
+- `LD (0x3000),A`: 0 occurrences;
+- `LD (0x4000),A`: 19 occurrences;
+- `LD (0x6000),A`: 25 occurrences.
 
-`original_id -> expanded_id`
+This is a byte-pattern census, not proof that every hit is executable code.
+Each bank-switching path still requires control-flow verification before new
+banks above 0x1F are used.
 
-Never reinterpret an original byte ID as if it were the new global ID. This
-keeps byte-exact source research separate from remake runtime representation.
+The absence of exact 0x3000 writes is useful: the original image does not
+already appear to manipulate MBC5's ninth ROM-bank register through that exact
+instruction pattern.
 
-## 4. Data tables
+## 5. Expanded bank ABI
 
-Species, forms, moves, items, abilities, evolution rules, learnsets, encounters,
-trainers, maps, text, graphics, and mechanics must be addressable through
-generated tables or manifests.
+New code/data uses an explicit far reference:
 
-Engine code may depend on table contracts, but must not depend on the current
-highest National Pokédex number or current move/item count.
+- bank: 16-bit storage, valid 0x000-0x1FF;
+- CPU address: 16-bit, normally 0x4000-0x7FFF for switchable ROM;
+- total stored size: 4 bytes.
 
-## 5. Capacity policy
+Using four bytes avoids a future second migration when bank 0x100-0x1FF is used.
 
-The configured widths are architectural ceilings, not allocation targets.
-Memory and ROM should still be banked/segmented so only required data is loaded
-at runtime.
+## 6. Content IDs
 
-Large datasets must support:
+Legacy Green species/move/item IDs remain 8-bit source values. Expanded tables
+do not use those bytes as a global namespace.
 
-- generated index tables;
-- segmented/banked storage;
-- pointer or offset tables wider than legacy byte indices where needed;
-- compile-time validation of every reference;
-- stable IDs independent of physical storage order.
+GREEN reserves 16-bit IDs for species, forms, moves, items, abilities, types,
+locations, maps, trainer classes, and evolution methods.
 
-## 6. Mechanics
+## 7. Save extension
 
-Later-generation mechanics are feature modules. A mechanic must declare:
+The original four SRAM banks remain the legacy save area.
 
-- persistent state, if any;
-- battle-only state, if any;
-- required data tables;
-- save migration impact;
-- compatibility behavior when disabled.
+Expansion bank 0x04 begins with a versioned GREEN extension header. New
+Generation-10-ready records live in banks 0x04-0x0F and reference content using
+the widened IDs.
 
-This prevents Mega Evolution, regional mechanics, form changes, or future
-mechanics from being hard-wired into the base species table.
+No sample all-0xFF byte in the original four banks is treated as guaranteed
+free capacity.
 
-## 7. Generation 10 rule
+## 8. Build rule
 
-When official Generation 10 data becomes available, GREEN should require data
-and feature-module additions, not another widening of species/move/item IDs or a
-new save identity model.
-
-If a future feature exceeds a declared storage width, the capacity schema must
-be revised explicitly with a migration path rather than silently truncating
-data.
+ROM/SAV binaries are generated locally from user-supplied inputs and are never
+committed. CI validates tools, manifests, and tests without downloading or
+building any external engine.
