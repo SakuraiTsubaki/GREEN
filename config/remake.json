@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "project": "GREEN",
   "title": "ポケットモンスター 緑",
   "originalGeneration": 1,
@@ -57,5 +57,17 @@
     }
   },
   "nativeSaveProfile": "JPN-GREEN-GBA",
-  "nativeSaveIsolation": true
+  "nativeSaveIsolation": true,
+  "generationSuperset": {
+    "repository": "SakuraiTsubaki/EMERALD",
+    "manifest": "manifests/generation-supersets.json",
+    "documentation": "docs/GENERATION_SUPERSET_MERGE.md",
+    "generationKey": "gen1",
+    "sourceProfile": "GREEN",
+    "mergePolicy": "union-preserve-variants",
+    "runtimeModes": [
+      "generation-superset",
+      "source-version-reproduction"
+    ]
+  }
 }
