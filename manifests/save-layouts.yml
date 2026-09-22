@@ -1,0 +1,51 @@
+schema_version: 1
+source: Japanese Generation I Pocket Monsters Green raw SRAM
+cartridge_sram_bytes: 0x8000
+main_data_start: 0x2598
+
+layouts:
+  japanese-green:
+    checksum_offset: 0x3594
+    checksum_algorithm: complement-byte-sum
+    checksum_range_start: 0x2598
+    checksum_range_end_exclusive: 0x3594
+    supplied_snapshots_checksum_verified:
+      - jp-green-rev0-save
+      - jp-green-reva-save
+    box_count: 8
+    slots_per_box: 30
+    max_trainer_name_chars: 5
+    max_nickname_chars: 5
+    offsets:
+      trainer_name: 0x2598
+      dex_caught: 0x259E
+      dex_seen: 0x25B1
+      items: 0x25C4
+      money: 0x25EE
+      rival: 0x25F1
+      options: 0x25F7
+      badges: 0x25F8
+      trainer_id: 0x25FB
+      pc_items: 0x27DC
+      current_box_index: 0x2842
+      event_work: 0x2892
+      starter: 0x29B9
+      event_flags: 0x29E9
+      play_time: 0x2CA0
+      daycare: 0x2CA7
+      party: 0x2ED5
+      current_box: 0x302D
+    evidence:
+      local_samples:
+        - jp-green-rev0-save
+        - jp-green-reva-save
+      implementation_crosscheck:
+        repository: kwsch/PKHeX
+        ref: 8ad201e80244f630ab5a46922ab72fb79c5ad4f4
+        offsets_path: PKHeX.Core/Saves/Substructures/Gen12/SAV1Offsets.cs
+        checksum_path: PKHeX.Core/Saves/SAV1.cs
+
+target:
+  native_profile: JPN-GREEN-GBA
+  source_layout_extended_in_place: false
+  conversion: source-to-canonical-to-target

@@ -1,0 +1,42 @@
+From GREEN: widen persistent species and held-item IDs without growing PokemonSubstruct0
+
+Target upstream:
+rh-hideout/pokeemerald-expansion@75b806a3ab57a81ff1eb6179288981f0b3cc3050
+
+--- a/include/pokemon.h
++++ b/include/pokemon.h
+@@ -132,16 +132,16 @@
+ struct PokemonSubstruct0
+ {
+-    enum Species species:11; // 2047 species.
+-    enum Type teraType:5; // 30 types.
+-    enum Item heldItem:10; // 1023 items.
+-    u16 unused_02:6;
++    // GREEN spends the existing padding before its native save format freezes,
++    // so later-generation species/forms and items do not force a boxed-Pokemon
++    // size increase.
++    u16 species; // 65535 engine species/form IDs.
++    u16 heldItem; // 65535 item IDs.
+     u32 experience:21;
+-    u32 nickname11:8; // 11th character of nickname.
+-    u32 unused_04:3;
++    u32 teraType:5; // 31 non-zero values plus TYPE_NONE.
++    u32 pokeball:6; // 63 balls.
++    u8 nickname11; // 11th character of nickname.
++    u8 nickname12; // 12th character of nickname.
+     u8 ppBonuses;
+     u8 friendship;
+-    u16 pokeball:6; // 63 balls.
+-    u16 nickname12:8; // 12th character of nickname.
+-    u16 unused_0A:2;
+ };
+ 
+--- a/src/pokemon.c
++++ b/src/pokemon.c
+@@ -770,2 +770,6 @@
+ STATIC_ASSERT(MAX_LEVEL <= 100, PokemonSubstruct0_experience_PotentiallyTooSmall); // Maximum of ~2 million exp.
++STATIC_ASSERT(sizeof(struct PokemonSubstruct0) == 12, GREEN_PokemonSubstruct0_MustRemain12Bytes);
++STATIC_ASSERT(NUM_SPECIES <= 0x10000, GREEN_PokemonSubstruct0_species_PotentiallyTooSmall);
++STATIC_ASSERT(ITEMS_COUNT <= 0x10000, GREEN_PokemonSubstruct0_heldItem_PotentiallyTooSmall);
++STATIC_ASSERT(MOVES_COUNT_ALL <= (1 << 11), GREEN_PokemonSubstruct1_moves_PotentiallyTooSmall);
+ 

@@ -1,0 +1,32 @@
+schema_version: 1
+source_family: pocket-monsters-green-generation-i
+principle: parse-source-to-canonical-then-serialize-target
+
+adapters:
+  japanese-green:
+    rom:
+      controller: MBC1
+      observed_rom_bytes: 524288
+      observed_rom_banks_16k: 32
+      declared_sram_bytes: 32768
+      revisions:
+        - id: jp-green-rev0
+          header_version: 0
+          sha256: 6576b4e0979e93d4a6fa02db893c294b7aeab3b841b1acc8658bc10b3554f33c
+        - id: jp-green-reva
+          header_version: 1
+          sha256: 3f0dc460ca8d06be1c9ac96307c939c0ea7baa366b40c2f1f4ad63242b6c4816
+    save:
+      cartridge_sram_bytes: 32768
+      main_data_start: 0x2598
+      checksum_offset: 0x3594
+      layout_family: japanese-gen1
+      checksum_rule: complement-of-byte-sum-from-0x2598-through-0x3593
+      supplied_snapshots_checksum_verified: true
+      rule: preserve-unknown-bytes-and-do-not-extend-in-place
+
+target:
+  runtime_family: generation-iii-derived-expanded
+  compatibility_game_version: LEAFGREEN
+  source_rom_banking_is_provenance_not-runtime-capacity: true
+  source_save_layout_is_import-schema-not-target-save-layout: true
