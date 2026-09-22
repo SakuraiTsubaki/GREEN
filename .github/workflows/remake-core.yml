@@ -18,7 +18,7 @@ jobs:
           python-version: "3.12"
 
       - name: Compile Python tooling
-        run: python -m compileall -q tools tests
+        run: python -m compileall -q src tools tests
 
       - name: Validate expansion policy
         run: python tools/validate_expansion_policy.py
