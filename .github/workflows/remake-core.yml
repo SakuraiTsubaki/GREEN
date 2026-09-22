@@ -38,3 +38,18 @@ jobs:
 
       - name: Verify GREEN patches against pin
         run: python tools/prepare_green_engine.py --engine-dir _engine --check-only
+
+      - name: Install GBA build toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi libpng-dev
+
+      - name: Apply GREEN engine patches
+        run: python tools/prepare_green_engine.py --engine-dir _engine
+
+      - name: Build GREEN LeafGreen runtime
+        run: make -C _engine leafgreen -j$(nproc) -O
+
+      - name: Verify GREEN GBA image
+        run: python tools/verify_green_gba.py _engine/pokeleafgreen.gba
