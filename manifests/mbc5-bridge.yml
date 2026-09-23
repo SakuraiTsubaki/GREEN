@@ -1,0 +1,56 @@
+schema_version: 1
+project: GREEN
+runtime: original-game-boy-rom
+mapper: MBC5+RAM+BATTERY
+
+fixed_bank_patch:
+  code_cave:
+    start: 0x0068
+    end_exclusive: 0x009B
+    evidence:
+      recursive_fixed_bank_execution_reaches_region: false
+      direct_call_or_jump_target_in_verified_fixed_bank_flow: false
+      same_location_used_for_both_revisions: true
+  entrypoint:
+    source: "00 C3 50 01"
+    target: "00 C3 94 00"
+
+far_call_9:
+  low_caller_entry: 0x0068
+  high_caller_entry: 0x006D
+  common: 0x0070
+  low_return: 0x0081
+  high_return: 0x0087
+  restore: 0x008C
+  input:
+    B: target_bank_low_8
+    C: target_bank_high_bit_0
+    HL: target_cpu_address
+  caller_rule:
+    bank_0x000_to_0x0FF: call_0x0068
+    bank_0x100_to_0x1FF: call_0x006D
+  nesting: supported
+  extra_runtime_ram_required: false
+
+boot_init:
+  address: 0x0094
+  action:
+    - write_0_to_0x3000
+    - jump_0x0150
+
+legacy_compatibility:
+  original_far_call:
+    rev0: 0x3620
+    reva: 0x360E
+    bank_bits: 8
+  expanded_far_call:
+    bank_bits: 9
+    max_bank: 0x1FF
+  original_ram_bank_writes:
+    mbc1_mode_write_0x6000: ignored_by_mbc5
+    ram_bank_write_0x4000: compatible_with_mbc5_ram_bank_register
+
+notes:
+  - Expansion code must use the 9-bit bridge when targeting bank 0x020 or above.
+  - High-bank code selects the high-caller entry so nested calls restore bit 8.
+  - Legacy code remains on the original 8-bit far-call path until individually migrated.

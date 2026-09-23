@@ -1,0 +1,7 @@
+revision,role,file_offset,cpu_address,direct_ref_count,evidence
+Rev 0,temporary bank switch entry,0x03606,0x3606,5,"stores requested A at CF04; saves current FFB8 at CF03; writes requested bank to FFB8 and 0x2000"
+Rev 0,restore temporary bank,0x03617,0x3617,7,"loads CF03; writes bank to FFB8 and 0x2000"
+Rev 0,8-bit far-call core,0x03620,0x3620,264,"saves FFB8 on stack; B selects bank; HL is jumped to; restores previous bank on return"
+Rev A,temporary bank switch entry,0x035F4,0x35F4,5,"same instruction structure as Rev 0 at revision-shifted address"
+Rev A,restore temporary bank,0x03605,0x3605,7,"same instruction structure as Rev 0 at revision-shifted address"
+Rev A,8-bit far-call core,0x0360E,0x360E,264,"same instruction structure as Rev 0 at revision-shifted address"
