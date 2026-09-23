@@ -1,4 +1,4 @@
-schema_version: 2
+schema_version: 3
 source:
   platform: Game Boy
   cartridge_sram_bytes: 0x8000
@@ -6,6 +6,22 @@ source:
   banks: 4
   main_data_start: 0x2598
   checksum_offset: 0x3594
+
+  party:
+    file_offset: 0x2ED5
+    sram_bank: 1
+    cpu_address: 0xAED5
+    wram_address: 0xD123
+    bytes: 0x158
+    layout:
+      count_bytes: 1
+      species_list_bytes: 7
+      party_mon_count: 6
+      party_mon_bytes_each: 44
+      ot_name_slots: 6
+      ot_name_bytes_each: 6
+      nickname_slots: 6
+      nickname_bytes_each: 6
 
 expanded:
   mapper: MBC5
@@ -20,7 +36,23 @@ expanded:
     magic: GRN10EXT
     schema_version: 1
 
+  payload:
+    local_offset: 0x0020
+    party_identity_v1:
+      entries: 6
+      entry_bytes: 4
+      layout:
+        species_id: little-endian-u16
+        form_id: little-endian-u16
+      source_conversion:
+        internal_id_table_rom_bank: 0x10
+        internal_id_table_cpu: 0x679A
+        internal_id_table_file_offset: 0x4279A
+        internal_id_entries: 190
+        unmapped_internal_id: 0xFFFF
+
 rule:
   source_layout_extended_in_place: false
   copy_legacy_region_byte_exact: true
-  initialize_new_space: 0xFF
+  initialize_unowned_new_space: 0xFF
+  canonical_gen1_base_species_id: verified_national_dex

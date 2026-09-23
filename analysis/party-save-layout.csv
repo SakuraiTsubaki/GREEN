@@ -1,0 +1,8 @@
+field,save_file_offset,sram_bank,sram_cpu_address,wram_address,size_bytes,notes
+party_block,0x2ED5,1,0xAED5,0xD123,0x158,"ROM copies this full block in both load and save directions"
+party_count,0x2ED5,1,0xAED5,0xD123,1,"number of party members"
+party_species_list,0x2ED6,1,0xAED6,0xD124,7,"six internal species IDs plus terminator slot"
+party_mon_structs,0x2EDD,1,0xAEDD,0xD12B,264,"six 44-byte party-mon records"
+party_ot_names,0x2FE5,1,0xAFE5,0xD233,36,"six 6-byte Japanese OT-name slots"
+party_nicknames,0x3009,1,0xB009,0xD257,36,"six 6-byte Japanese nickname slots"
+party_block_end,0x302D,1,0xB02D,0xD27B,0,"next save/WRAM region begins here"
