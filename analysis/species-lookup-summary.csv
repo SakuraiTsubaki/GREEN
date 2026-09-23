@@ -1,0 +1,3 @@
+revision,loader_cpu_address,loader_direct_refs,working_species_byte,normal_stats_bank,normal_stats_cpu,normal_record_bytes,normal_record_count,mew_internal_id,mew_stats_bank,mew_stats_cpu
+Rev 0,0x2F2E,29,0xD0E3,0x0E,0x4000,28,150,0x15,0x01,0x4200
+Rev A,0x2F1C,29,0xD0E3,0x0E,0x4000,28,150,0x15,0x01,0x4200
