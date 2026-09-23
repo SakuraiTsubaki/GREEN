@@ -1,96 +1,96 @@
 # Species ID expansion
 
-## ROM evidence
+## Corrected live identity boundary
 
-GREEN's original species data is not a single 151-entry modern-style table.
+The verified base-stat loader does **not** take its species from 0xD0E3.
 
-### Ordinary species
+Its input internal species byte is **0xD092**.
 
-Both verified revisions have a 28-byte base-stat table beginning at:
+The loader saves the previous value of 0xD0E3, copies 0xD092 into 0xD0E3, uses
+0xD0E3 as the internal-ID/Pokédex conversion scratch byte, loads a 28-byte base
+stat record into **0xD095**, overwrites the first byte at 0xD095 with the
+original internal species ID from 0xD092, and restores 0xD0E3.
 
-- ROM bank 0x0E
-- CPU address 0x4000
-- file offset 0x38000
-
-The first byte of each record is the National Pokédex number. Records 1 through
-150 are sequential and occupy 150 x 28 = 4200 bytes.
-
-The complete 150-record region is byte-identical between Rev 0 and Rev A.
-
-### Mew
-
-Mew is not the 151st record in that bank-0x0E table.
-
-Its 28-byte record is separately stored at:
-
-- ROM bank 0x01
-- CPU address 0x4200
-- file offset 0x04200
-
-Its first bytes are:
-
-`97 64 64 64 64 64 18 18 ...`
-
-which encode Pokédex 151 and the original 100/100/100/100/100 Gen I stat line.
-
-The record is byte-identical in both supplied revisions.
-
-## Loader evidence
-
-The base-stat loader begins at:
+Verified loader entries:
 
 - Rev 0: 0x2F2E
 - Rev A: 0x2F1C
 
-There are 29 exact direct CALL references to the corresponding entry in each
-ROM.
+Each has 29 exact direct CALL references.
 
-The routine saves the current ROM bank, selects bank 0x0E, and reads the
-working species byte at 0xD0E3.
+This correction matters because GREEN must not allocate a speculative “species
+high byte” next to the wrong legacy variable.
 
-Internal species value 0x15 takes the separate Mew path at bank 0x01:0x4200.
+## Internal species mapping
 
-The ordinary path invokes predef ID 0x3A, then reads 0xD0E3 again, subtracts
-one, multiplies it by 28, adds it to 0x4000, and copies one 28-byte record.
+ROM bank 0x10 contains the 190-byte internal-ID mapping table at 0x679A
+(file offset 0x4279A).
 
-This proves that the current execution boundary is an **8-bit internal species
-identity feeding a fixed-size lookup**, not simply a 151-record array that can
-be extended in place.
+Two routines immediately precede it:
 
-## GREEN expansion boundary
+- 0x676F: National Pokédex number in 0xD0E3 -> legacy internal ID in 0xD0E3;
+- 0x6786: legacy internal ID in 0xD0E3 -> National Pokédex number in 0xD0E3.
 
-Original species continue using the original loader while it is being
-preserved and verified.
+The table is identical in Rev 0 and Rev A.
 
-Expanded species use:
+Examples:
 
-- 16-bit species ID;
-- separate 16-bit form ID;
-- explicit legacy-internal-ID -> canonical-ID mapping;
-- a sparse paged 16-bit index;
-- 4-byte MBC5 far pointers.
+- internal 0x15 -> National Dex 151;
+- internal 0x99 -> National Dex 1.
 
-The index splits an ID as:
+## Base-stat storage
+
+Ordinary species 1-150 use 28-byte records at bank 0x0E:0x4000
+(file 0x38000).
+
+Mew is separate at bank 0x01:0x4200.
+
+The ordinary 150-record region and the Mew record are byte-identical between the
+two verified revisions.
+
+## First actual 16-bit runtime entry
+
+GREEN now reserves expansion bank 0x20:0x4000 for the first species runtime API.
+
+The API takes:
+
+`DE = canonical u16 species_id`
+
+For IDs 1-151:
+
+1. it saves the current legacy 0xD092 and 0xD0E3 values on the CPU stack;
+2. writes the low canonical ID to 0xD0E3;
+3. calls the original bank-0x10 routine at 0x676F through the new 9-bit MBC5
+   far-call bridge, converting Pokédex number to internal ID;
+4. places the internal ID in 0xD092;
+5. calls the revision-correct original base-stat loader;
+6. restores both legacy variables;
+7. returns carry clear.
+
+No new WRAM or HRAM byte is consumed.
+
+ID 0 or any ID above 151 currently returns carry set. That result is the
+explicit seam for the next implementation step: modern expansion records.
+
+The runtime bytes are installed by `tools/patch_species_runtime.py`.
+
+## 16-bit expanded lookup
+
+Expanded records use a sparse paged index:
 
 `HHLL -> page HH -> slot LL`
 
-An allocated page is 256 x 4 = 1024 bytes. Unused high-byte pages consume no
-ROM.
+Each allocated page has 256 four-byte MBC5 far pointers:
 
-This keeps the full 16-bit namespace available without allocating a 256 KiB
-flat pointer table up front.
+- little-endian u16 ROM bank;
+- little-endian u16 CPU address.
 
-## Why the 28-byte table is not widened in place
+A page is 1024 bytes and only used pages consume ROM space. This preserves the
+full 16-bit namespace without preallocating a flat 256 KiB pointer table.
 
-The legacy record has one Special stat and Generation I-specific fields. Modern
-content needs data that did not exist in this format, including separate
-Special Attack/Special Defense and later mechanic metadata.
+## Next binary step
 
-GREEN therefore preserves the legacy record for original compatibility and
-places modern records in expansion banks. The new 16-bit dispatch layer chooses
-which representation to load.
-
-The next binary patch is the dispatcher at the species-loader boundary. Before
-installing it, GREEN must allocate the runtime high byte/form state and verify
-every party/battle/save path that currently assumes the one-byte species
-identity.
+The next step is to define the modern expansion species record and implement the
+carry-set branch for IDs above 151. That branch will load from the paged far
+index instead of forcing later-generation fields into the Generation I
+28-byte record.

@@ -1,10 +1,26 @@
-schema_version: 1
+schema_version: 2
 project: GREEN
 runtime: original-game-boy-rom
 
 legacy:
-  working_species_byte: 0xD0E3
+  input_internal_species_byte: 0xD092
+  mapping_scratch_byte: 0xD0E3
+  base_stats_work_buffer: 0xD095
   identity_bits: 8
+
+  internal_to_dex:
+    bank: 0x10
+    cpu_address: 0x6786
+    mapping_table_cpu: 0x679A
+    mapping_table_file_offset: 0x4279A
+    entries: 190
+
+  dex_to_internal:
+    bank: 0x10
+    cpu_address: 0x676F
+    mapping_table_cpu: 0x679A
+    entries: 190
+
   base_stats:
     ordinary:
       bank: 0x0E
@@ -20,6 +36,7 @@ legacy:
       cpu_address: 0x4200
       file_offset: 0x04200
       record_bytes: 28
+
   loader:
     rev0: 0x2F2E
     reva: 0x2F1C
@@ -27,18 +44,17 @@ legacy:
     observed_flow:
       - save_current_rom_bank
       - select_bank_0x0E
-      - read_working_species_byte
+      - save_mapping_scratch_D0E3
+      - copy_input_D092_to_mapping_scratch_D0E3
       - special_case_internal_id_0x15_for_mew
-      - invoke_predef_0x3A_before_ordinary_table_index
+      - map_internal_id_to_national_dex_for_ordinary_species
       - subtract_1
       - multiply_by_28
       - add_to_0x4000
-      - copy_28_bytes_to_work_buffer
+      - copy_28_bytes_to_D095_work_buffer
+      - overwrite_D095_first_byte_with_original_internal_id_from_D092
+      - restore_D0E3
       - restore_previous_rom_bank
-
-revision_comparison:
-  ordinary_150_records_identical: true
-  mew_record_identical: true
 
 expanded:
   species_id_bits: 16
@@ -46,6 +62,25 @@ expanded:
   legacy_internal_id_is_not_canonical_id: true
   legacy_to_canonical_mapping_required: true
   forms_are_separate_from_species: true
+
+  runtime_api_v1:
+    bank: 0x20
+    cpu_address: 0x4000
+    file_offset: 0x80000
+    input:
+      DE: canonical_u16_species_id
+    result:
+      carry_clear: legacy_species_1_through_151_loaded_into_D095
+      carry_set: expanded_record_path_required
+    mutates_legacy_species_state_permanently: false
+    extra_runtime_ram_required: false
+    legacy_mapping:
+      - canonical_1_through_151_are_treated_as_verified_national_dex
+      - dex_to_internal_uses_bank_0x10_cpu_0x676F
+      - original_loader_is_then_called
+    revision_specific_original_loader:
+      rev0: 0x2F2E
+      reva: 0x2F1C
 
   lookup_index:
     kind: sparse-paged-u16-far-pointer
@@ -62,7 +97,8 @@ expanded:
 
 migration_rule:
   - keep_the_legacy_8_bit_loader_for_original_species
-  - route_expanded_species_through_a_new_16_bit_dispatch_path
+  - call_runtime_api_v1_with_u16_ids_for_migrated_paths
+  - route_ids_above_151_or_nonzero_forms_to_expansion_records_next
   - do_not_resize_the_legacy_28_byte_table_in_place
   - do_not_assume_legacy_internal_id_equals_national_dex
   - modern_stat_and_mechanic_fields_live_in_expansion_records
